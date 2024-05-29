@@ -1,34 +1,35 @@
 import {FC, useState} from 'react';
-import {Card, Flex, Divider, Checkbox, Radio, RadioChangeEvent} from 'antd';
+import {Card, Flex, Checkbox, Radio, RadioChangeEvent} from 'antd';
+
+import {QUESTION_MODEL, ANSWER_TYPE} from '@models/Question';
+import {IProviderProps} from '@context/Context';
 
 interface IQuestionProps {
-    title: string;
-    description: string;
-    options: string[];
-    isMulti: boolean;
-    questionId: string;
-    onResult: (selectedItem: string) => void;
+    question: QUESTION_MODEL;
 }
 
-const Question: FC<IQuestionProps> = (props) => {
-    const {title, description, questionId, isMulti, options, onResult} = props;
+const Question: FC<IQuestionProps & Pick<IProviderProps, 'onNewQuestion'>> = (props) => {
+    const {onNewQuestion, question} = props;
+    const {title, answers, answerType, selected, id} = question;
 
     const [checkedList, setCheckedList] = useState<string[]>([]);
     const [radioValue, setRadioValue] = useState<string>('');
 
-    const onCheckboxChanged = (list: string[]) => {
-        setCheckedList(list);
+    const onCheckboxChanged = (list: number[]) => {
+        question.selected = list;
+        onNewQuestion(question);
     };
     const onRadioChanged = (e: RadioChangeEvent) => {
-        setRadioValue(e.target.value);
+        question.selected = Array.isArray(e.target.value) ? e.target.value : [e.target.value];
+        onNewQuestion(question);
     };
 
     const OptionsRender = () => {
-        if (isMulti) {
+        if (answerType === ANSWER_TYPE.MULTI) {
             return (
                 <Checkbox.Group
-                    options={options.map((optionItem) => optionItem.title)}
-                    value={checkedList}
+                    options={answers?.map((optionItem) => optionItem.text) || []}
+                    value={question.selected}
                     onChange={onCheckboxChanged}
                 />
             );
@@ -36,12 +37,12 @@ const Question: FC<IQuestionProps> = (props) => {
 
         return (
             <Radio.Group
-                defaultValue={options[0]?.title}
-                value={radioValue}
+                defaultValue={answers?.[0].text}
+                value={question.selected?.[0]}
                 onChange={onRadioChanged}
             >
-                {options.map((variant) => {
-                    return <Radio.Button value={variant.id}>{variant.title}</Radio.Button>;
+                {answers?.map((variant) => {
+                    return <Radio.Button value={variant.id}>{variant.text}</Radio.Button>;
                 })}
             </Radio.Group>
         );
@@ -56,12 +57,6 @@ const Question: FC<IQuestionProps> = (props) => {
                 gap="small"
                 wrap
             >
-                {description && (
-                    <>
-                        <p>{description}</p>
-                        <Divider />
-                    </>
-                )}
                 {<OptionsRender />}
             </Flex>
         </Card>

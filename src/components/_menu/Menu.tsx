@@ -11,12 +11,12 @@ type MenuItem = Required<MenuProps>['items'][number];
 
 const items: MenuItem[] = [
     {
-        label: 'Feed',
-        key: RoutePath.feed,
+        label: 'Опрос',
+        key: RoutePath.survey,
         icon: <MailOutlined />
     },
     {
-        label: 'Neuro',
+        label: 'AI',
         key: RoutePath.neuro,
         icon: <AppstoreOutlined />
     }

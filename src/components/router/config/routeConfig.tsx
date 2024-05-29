@@ -13,7 +13,7 @@ export type AppRoutesProps = RouteProps & {
 export enum AppRoutes {
     MAIN = 'main',
     NEURO = 'neuro',
-    FEED = 'feed',
+    SURVEY = 'survey',
     // last
     NOT_FOUND = 'not_found',
 }
@@ -21,18 +21,18 @@ export enum AppRoutes {
 export const RoutePath: Record<AppRoutes, string> = {
     [AppRoutes.MAIN]: '/',
     [AppRoutes.NEURO]: '/neuro',
-    [AppRoutes.FEED]: '/feed',
+    [AppRoutes.SURVEY]: '/survey',
     // последний
     [AppRoutes.NOT_FOUND]: '*'
 };
 
-export const routeConfig: Record<AppRoutes.MAIN|AppRoutes.NOT_FOUND, AppRoutesProps> = {
+export const routeConfig: Record<AppRoutes, AppRoutesProps> = {
     [AppRoutes.MAIN]: {
         path: RoutePath.main,
         element: <Main />,
     },
-    [AppRoutes.FEED]: {
-      path: RoutePath.feed,
+    [AppRoutes.SURVEY]: {
+      path: RoutePath.survey,
       element: <Feed />
     },
     [AppRoutes.NEURO]: {

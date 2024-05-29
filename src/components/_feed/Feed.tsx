@@ -1,30 +1,30 @@
-import {FC, useState} from 'react';
+import {FC, useContext, useState} from 'react';
 
 import {Flex} from 'antd';
 
 import {MOCK_QUESTIONS} from '@components/mock';
 import Question from '@components/_question/Question';
+import {MainContext, IProviderProps} from '@context/Context';
 
 interface IFeedProps {}
 
 const Feed: FC<IFeedProps> = () => {
-    const [feedState, setFeedState] = useState([]);
-
-    const onResult = (items) => {
-        setFeedState(feedState);
-    };
+    const {questionsState, onNewQuestion} = useContext<IProviderProps>(MainContext);
 
     return (
-        <Flex gap="middle" wrap align="center" justify="center">
-            {MOCK_QUESTIONS.map((mockItem) => {
+        <Flex
+            gap="middle"
+            wrap={true}
+            align="center"
+            justify="center"
+            vertical={true}
+        >
+            {questionsState?.map((questionItem) => {
                 return (
                     <Question
-                        title={mockItem.title}
-                        description={mockItem.description}
-                        options={mockItem.options}
-                        isMulti={mockItem.isMulti}
-                        questionId={mockItem.id}
-                        onResult={onResult}
+                        key={`${questionItem.id}-${questionItem.selected}`}
+                        question={questionItem}
+                        onNewQuestion={onNewQuestion}
                     />
                 );
             })}

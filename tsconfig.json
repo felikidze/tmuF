@@ -18,6 +18,8 @@
       "@/*": ["./src/*", "./dist/*", ""],
       "@components/*": ["src/components/*"],
       "@router/*": ["src/components/router/*"],
+      "@context/*": ["src/components/context/*"],
+      "@models/*": ["src/models/*"],
       "@consts": ["src/components/consts"]
     },
 
