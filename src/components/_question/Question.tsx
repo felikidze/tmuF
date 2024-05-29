@@ -1,4 +1,4 @@
-import {FC, useState} from 'react';
+import {FC} from 'react';
 import {Card, Flex, Checkbox, Radio, RadioChangeEvent} from 'antd';
 
 import {QUESTION_MODEL, ANSWER_TYPE} from '@models/Question';
@@ -10,18 +10,15 @@ interface IQuestionProps {
 
 const Question: FC<IQuestionProps & Pick<IProviderProps, 'onNewQuestion'>> = (props) => {
     const {onNewQuestion, question} = props;
-    const {title, answers, answerType, selected, id} = question;
-
-    const [checkedList, setCheckedList] = useState<string[]>([]);
-    const [radioValue, setRadioValue] = useState<string>('');
+    const {title, answers, answerType, selected} = question;
 
     const onCheckboxChanged = (list: number[]) => {
         question.selected = list;
-        onNewQuestion(question);
+        onNewQuestion?.(question);
     };
     const onRadioChanged = (e: RadioChangeEvent) => {
         question.selected = Array.isArray(e.target.value) ? e.target.value : [e.target.value];
-        onNewQuestion(question);
+        onNewQuestion?.(question);
     };
 
     const OptionsRender = () => {
@@ -29,7 +26,7 @@ const Question: FC<IQuestionProps & Pick<IProviderProps, 'onNewQuestion'>> = (pr
             return (
                 <Checkbox.Group
                     options={answers?.map((optionItem) => optionItem.text) || []}
-                    value={question.selected}
+                    value={selected}
                     onChange={onCheckboxChanged}
                 />
             );
@@ -38,7 +35,7 @@ const Question: FC<IQuestionProps & Pick<IProviderProps, 'onNewQuestion'>> = (pr
         return (
             <Radio.Group
                 defaultValue={answers?.[0].text}
-                value={question.selected?.[0]}
+                value={selected?.[0]}
                 onChange={onRadioChanged}
             >
                 {answers?.map((variant) => {

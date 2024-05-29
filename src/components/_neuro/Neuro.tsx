@@ -15,14 +15,13 @@ interface INeuroProps {}
 const Neuro: FC<INeuroProps> = () => {
     const [fileList, setFileList] = useState<UploadFile[]>([]);
     const [researchResult, setResearchResult] = useState('');
-    const onChange: UploadProps['onChange'] = ({fileList: newFileList, file}) => {
-        let fileList = [...newFileList];
+    const onChange: UploadProps['onChange'] = ({fileList: newFileList}) => {
         // Accept 1 files only
-        fileList = fileList.slice(-1);
-        fileList.forEach(function (file, index) {
+        const fileList = [...newFileList].slice(-1);
+        fileList.forEach(function (file) {
             let reader = new FileReader();
             reader.onload = (e) => {
-                file.base64 = e.target.result;
+                file.base64 = e.target?.result;
             };
             reader.readAsDataURL(file.originFileObj);
         });
