@@ -1,0 +1,1 @@
+export const MAX_UPLOAD_FILES_COUNT = 1;
