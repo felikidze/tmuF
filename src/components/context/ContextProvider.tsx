@@ -1,5 +1,6 @@
 import {useState, FC, useLayoutEffect} from 'react';
 import {default as axios} from 'axios';
+import {animateScroll} from 'react-scroll';
 
 import {QUESTION_MODEL, RESPONSE_QUESTION_MODEL, CONTEXT_DTO} from '@models/Question';
 import {MainContext, IProviderProps} from './Context';
@@ -10,7 +11,7 @@ export const ContextProvider: FC = (props) => {
 
     useLayoutEffect(() => {
         const fetchData = async () => {
-            const result = await axios.get('http://192.168.1.108:8888/getStartQuestions');
+            const result = await axios.get('http://192.168.1.108:8889/getStartQuestions');
 
             setQuestionsState(result.data);
         };
@@ -34,7 +35,7 @@ export const ContextProvider: FC = (props) => {
             answersIds: item.selected!
         }));
 
-        const result = await axios.post<RESPONSE_QUESTION_MODEL[]>('http://192.168.1.108:8888/getQuestions', dto);
+        const result = await axios.post<RESPONSE_QUESTION_MODEL[]>('http://192.168.1.108:8889/getQuestions', dto);
 
         const resultState = result.data.map((resultItem) => {
             const intersectedItem = newState.find((processedItem) => processedItem.id === resultItem.id);
@@ -47,9 +48,17 @@ export const ContextProvider: FC = (props) => {
         });
 
         if (resultState.every((item) => Array.isArray(item.selected))) {
-            const result = await axios.post<RESPONSE_QUESTION_MODEL[]>('http://192.168.1.108:8888/getQuestions', dto);
+            const result = await axios.post<RESPONSE_QUESTION_MODEL[]>('http://192.168.1.108:8889/getQuestions', dto);
         } else {
             setQuestionsState(resultState);
+        }
+
+        if (resultState.length !== newState.length) {
+            setTimeout(() => {
+                animateScroll.scrollToBottom({
+                    smooth: true
+                });
+            }, 0);
         }
     };
 
