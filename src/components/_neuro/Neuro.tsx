@@ -1,18 +1,19 @@
 import {FC, useState} from 'react';
 
-import {default as axios} from 'axios';
-
 import {Upload} from 'antd';
 import type {GetProp, UploadFile, UploadProps} from 'antd';
 import ImgCrop from 'antd-img-crop';
 
 import {MAX_UPLOAD_FILES_COUNT} from '@consts';
+import {API, API2} from '@/api';
 
 type FileType = Parameters<GetProp<UploadProps, 'beforeUpload'>>[0];
 
-interface INeuroProps {}
+interface INeuroProps {
+    customUploadImage: (options: unknown) => Promise<void>|void;
+}
 
-const Neuro: FC<INeuroProps> = () => {
+const Neuro: FC<INeuroProps> = (props) => {
     const [fileList, setFileList] = useState<UploadFile[]>([]);
     const [researchResult, setResearchResult] = useState('');
     const onChange: UploadProps['onChange'] = ({fileList: newFileList}) => {
@@ -52,14 +53,13 @@ const Neuro: FC<INeuroProps> = () => {
         };
         fmData.append('image', file);
         try {
-            const res = await axios.post('http:///172.20.10.3:8888/melanomaAnalyze', fmData, config);
+            const res = await API2.post('analyze', fmData, config);
 
             onSuccess('Ok')
             console.log('server res: ', res);
             setResearchResult(res.data?.result);
         } catch (err) {
             console.log('Eroor: ', err);
-            const error = new Error('Some error');
             onError({err});
             setResearchResult("В процессе анализа изображения произошла ошибка!");
         }
@@ -79,7 +79,7 @@ const Neuro: FC<INeuroProps> = () => {
                     onChange={onChange}
                     onPreview={onPreview}
                     onRemove={onRemove}
-                    customRequest={uploadImage}
+                    customRequest={props.customUploadImage || uploadImage}
                 >
                     {fileList.length < 1 && '+ Upload'}
                 </Upload>

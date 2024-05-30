@@ -1,17 +1,23 @@
 import {useState, FC, useLayoutEffect} from 'react';
-import {default as axios} from 'axios';
+import {useNavigate} from 'react-router-dom';
 import {animateScroll} from 'react-scroll';
+import {theme} from 'antd';
 
 import {QUESTION_MODEL, RESPONSE_QUESTION_MODEL, CONTEXT_DTO} from '@models/Question';
+import {API} from '@/api';
+import {RoutePath} from '@router/config/routeConfig';
 import {MainContext, IProviderProps} from './Context';
 
 export const ContextProvider: FC = (props) => {
     const [questionsState, setQuestionsState] = useState<QUESTION_MODEL[]>([]);
-    const [testResult, setTestResult] = useState()
+    const [testResult, setTestResult] = useState();
+    const [themeAlgorithm, setThemeAlgorithm] = useState({algorithm: theme.defaultAlgorithm});
+
+    const navigate = useNavigate();
 
     useLayoutEffect(() => {
         const fetchData = async () => {
-            const result = await axios.get('http://192.168.1.108:8889/getStartQuestions');
+            const result = await API.get('getStartQuestions');
 
             setQuestionsState(result.data);
         };
@@ -35,7 +41,7 @@ export const ContextProvider: FC = (props) => {
             answersIds: item.selected!
         }));
 
-        const result = await axios.post<RESPONSE_QUESTION_MODEL[]>('http://192.168.1.108:8889/getQuestions', dto);
+        const result = await API.post<RESPONSE_QUESTION_MODEL[]>('getQuestions', dto);
 
         const resultState = result.data.map((resultItem) => {
             const intersectedItem = newState.find((processedItem) => processedItem.id === resultItem.id);
@@ -48,7 +54,11 @@ export const ContextProvider: FC = (props) => {
         });
 
         if (resultState.every((item) => Array.isArray(item.selected))) {
-            const result = await axios.post<RESPONSE_QUESTION_MODEL[]>('http://192.168.1.108:8889/getQuestions', dto);
+            const testResult = await API.post<RESPONSE_QUESTION_MODEL[]>('getResult', dto);
+            setTestResult(testResult.data);
+            setTimeout(() => {
+                navigate(RoutePath.result);
+            })
         } else {
             setQuestionsState(resultState);
         }
@@ -62,9 +72,19 @@ export const ContextProvider: FC = (props) => {
         }
     };
 
+    const onSwitchTheme = () => {
+        setThemeAlgorithm((p) =>
+            p.algorithm === theme.defaultAlgorithm
+                ? {algorithm: theme.darkAlgorithm}
+                : {algorithm: theme.defaultAlgorithm}
+        );
+    };
+
     const providerProps: IProviderProps = {
         questionsState,
         testResult,
+        themeAlgorithm,
+        onSwitchTheme,
         onNewQuestion
     };
 

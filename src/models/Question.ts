@@ -6,8 +6,8 @@ interface ANSWER_MODEL {
 
 export enum ANSWER_TYPE {
     SINGLE,
+    IMAGE,
     MULTI,
-    IMAGE
 }
 
 export interface QUESTION_MODEL {
@@ -23,4 +23,12 @@ export type RESPONSE_QUESTION_MODEL = Omit<QUESTION_MODEL, 'selected'>;
 export interface CONTEXT_DTO {
     questionId: number;
     answersIds: number[];
+}
+
+export enum ONCOLOGY_CATEGORY {
+    MELANOMA,
+    LUNGS,
+    STOMA,
+    SEX_MOMENT,
+    ALL
 }
