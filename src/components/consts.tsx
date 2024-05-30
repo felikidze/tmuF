@@ -16,23 +16,23 @@ export const TEXT_RESULT = "Регулярные медицинские осмо
 
 export const TABLE_DESCRIPTION: DescriptionsProps['items'] = [
   {
-    key: ONCOLOGY_CATEGORY.LUNGS,
+    key: ONCOLOGY_CATEGORY.LUNGS+'',
     label: 'Легкие',
     children: <p>+</p>
   },
   {
-    key: ONCOLOGY_CATEGORY.MELANOMA,
+    key: ONCOLOGY_CATEGORY.MELANOMA+'',
     label: 'Меланома',
     children: <p>+</p>
   },
   {
-    key: ONCOLOGY_CATEGORY.STOMA,
+    key: ONCOLOGY_CATEGORY.STOMA+'',
     label: 'Кишечник',
     children: <p>+</p>
   },
   {
-    key: ONCOLOGY_CATEGORY.SEX_MOMENT,
+    key: ONCOLOGY_CATEGORY.SEX_MOMENT+'',
     label: 'Половая система',
     children: <p>+</p>
   }
-];
+] as const;
